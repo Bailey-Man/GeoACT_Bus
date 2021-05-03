@@ -113,7 +113,7 @@ class user_viz():
             y_arr.append(i[1][0])
         # im = plt.imread('results/bus_img.png')
         # plt.imshow(im)
-        plt.title('Approximate Seating Chart')
+        plt.title('Approximate Seating Chart', fontsize=7)
         plt.xticks(np.array([1.2, 1.8, 2.2, 3.8, 4.2, 4.8]))
         plt.yticks(np.arange(-.5, 23.5, 1))
         plt.grid(True)
@@ -144,17 +144,26 @@ class user_viz():
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 2, 1)
         ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
+        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        plt.gcf().set_size_inches(2,2)
+        # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+        plt.axis('off')
+
+
         ax2 = fig.add_subplot(1,2,2)
         ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
-        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        # plt.gcf().set_size_inches(2,2)
-        # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
-        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
-        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
-
+        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        plt.gcf().set_size_inches(2,2)
+        plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
         # log scale vs regular scale + 'be not afraid'
-        # plt.axis('off')
+        plt.axis('off')
+        fig.text(.1, .01, 'These heatmaps show relative airflow within the cabin \nof the bus in terms of its effect on concentration \nof COVID-19 Particles (averaged across 100 simulations)', fontsize=4)
         plt.savefig('results/relative_airflow.png', dpi=300)
+
         print('relative airflow complete!')
         # plt.show()
 
@@ -179,10 +188,13 @@ class user_viz():
         pd.Series(bus_trip).plot.kde(lw=2, c='r')
         plt.title('Density estimation of exposure')
         # plt.xlim(0, .004)
+        # print(plt.xticks())
 
         # set x ticks
-        # temp_x = np.array([i * 5 for i in range(8)])
-        # str_x = np.array([str(int / 100)+'%' for int in temp_x])
+        temp_x = np.array(plt.xticks()[0])
+        str_x = np.array([str(round(int * 100, 2))+'%' for int in temp_x])
+        print(str_x)
+        plt.xticks(temp_x, str_x)
 
         plt.ticklabel_format(axis="x")#, style="sci", scilimits=(0,0))
 

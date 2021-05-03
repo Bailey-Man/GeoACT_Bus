@@ -27,19 +27,30 @@ def main(targets):
         default_data = json.load(f)
     with open('config/aerosol.json') as g:
         aerosol_data = json.load(g)
+    print(targets)
 
     # for i in sys.argv:
-    # print('t', targets, '0', targets[0])
+    # print('t', targets, '0', args.0])
     # number each of these:
-    floor_area = float(targets[0]) * 2.3 * 3.28084 # square feet
-    trip_duration = targets[1]
-    number_of_students = targets[2]
-    mask = targets[3]
-    windows = targets[4]
-    num_sims_ = targets[5]
-    mask_eff_ = targets[6]
-    seating_ = targets[7]
-    air_exchange_rate = targets[8]
+    floor_area = float(args.bus_type) * 2.3 * 3.28084 # square feet
+    trip_duration = args.trip_duration
+    number_of_students = args.num_students
+    mask = args.mask_wearing
+    windows = args.windows
+    num_sims_ = 100 # default
+    mask_eff_ = .1 # default
+    seating_ = args.seating_type
+    air_exchange_rate = 20 # default for a bus
+
+    bus_type_arg = '-l' #length of bus
+    trip_duration_arg = '-t'
+    seating_chart_type_arg = '-s'
+    num_students_on_bus = '-n'
+    mask_wearing_arg = '-m' # likelihood
+    windows_arg = '-w'
+
+
+
 
 
         # ask kaushik about how inputs work
@@ -87,7 +98,19 @@ def main(targets):
     return
 
 if __name__ == '__main__':
-    targets = sys.argv[1:]
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--bus_type', required=True)
+    parser.add_argument('-t', '--trip_duration', required=True)
+    parser.add_argument('-s', '--seating_type', required=True)
+    parser.add_argument('-n', '--num_students', required=True)
+    parser.add_argument('-m', '--mask_wearing', required=True)
+    parser.add_argument('-w', '--windows', required=True)
+    args = parser.parse_args()
+    print(args)
+
+
+    targets = args
     # parser = argparse.ArgumentParser()
     # targets = parser.parse_args()
     # print(targets, 'targe')
