@@ -111,7 +111,16 @@ class user_viz():
         for i in t_dict.items():
             x_arr.append(i[1][1])
             y_arr.append(i[1][0])
-        plt.scatter(x=x_arr, y=y_arr)
+        # im = plt.imread('results/bus_img.png')
+        # plt.imshow(im)
+        plt.title('Approximate Seating Chart')
+        plt.xticks(np.array([1.2, 1.8, 2.2, 3.8, 4.2, 4.8]))
+        plt.yticks(np.arange(-.5, 23.5, 1))
+        plt.grid(True)
+        # plt.tick_params(axis='both', left='off', top='off', right='off', bottom='off', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
+        plt.scatter(x=x_arr, y=y_arr)#, marker='_')
+        plt.xticks(c='w')
+        plt.yticks(c='w')
         # plt.axis('off') # set axis to be blank
         # plt.show()
 
@@ -128,8 +137,23 @@ class user_viz():
         bus_trip, conc_array, out_mat, chance_nonzero = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
         # print('conc_heat_figure')
         # plt.figure(figsize=(5,4))
-        plt.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
-        plt.gcf().set_size_inches(2,2)
+        # plt.subplots()
+        # base = plt.gca().transData
+        # fig = plt.subplots() # ????
+        rot = mpl.transforms.Affine2D().rotate_deg(180)
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
+        ax2 = fig.add_subplot(1,2,2)
+        ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
+        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        # plt.gcf().set_size_inches(2,2)
+        # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+
+        # log scale vs regular scale + 'be not afraid'
+        # plt.axis('off')
         plt.savefig('results/relative_airflow.png', dpi=300)
         print('relative airflow complete!')
         # plt.show()
@@ -144,7 +168,7 @@ class user_viz():
         bus_seating = self.generate_bus_seating()
         bus_trip, conc_array, out_mat, chance_nonzero = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
         self.chance_nonzero = chance_nonzero
-        print(chance_nonzero, 'more than none?')
+        # print(chance_nonzero, 'more than none?')
         self.conc_array = conc_array
         self.bus_trips.append(bus_trip)
         # print('model_run start')
@@ -152,21 +176,21 @@ class user_viz():
         plt.gcf().set_size_inches(5,4)
         # plt.gcf().set_size_inches(5,4)
         # ax = plt.gca()
-        pd.Series(bus_trip).plot.kde()
+        pd.Series(bus_trip).plot.kde(lw=2, c='r')
         plt.title('Density estimation of exposure')
         # plt.xlim(0, .004)
-        #
-        # # set x ticks
+
+        # set x ticks
         # temp_x = np.array([i * 5 for i in range(8)])
         # str_x = np.array([str(int / 100)+'%' for int in temp_x])
-        # plt.xticks(np.arange(0, .004, .0005), str_x)
-        # plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+
+        plt.ticklabel_format(axis="x")#, style="sci", scilimits=(0,0))
 
         plt.yticks(np.arange(0, 3500, 700), np.arange(0, 3500, 700) / 3500)
 
 
         # rescale y axis to be % based
-        plt.xlabel('Likelihood of exposure to infectious dose of particles')
+        plt.xlabel('Likelihood of exposure to infectious dose of particles                         ')
         plt.ylabel('Density estimation of probability of occurrence')
         plt.savefig('results/window_curve.png', dpi=300)
         # plt.show()
