@@ -79,14 +79,15 @@ class user_viz():
         '''
         # get seating type:
         temp = self.seat_var
-        if temp == "Full Occupancy":
+        if temp == "full":
             seat_dict = self.load_parameters('config/f_seating_full.json')
         else:
-            print(temp, 'temp')
-            if temp == "Window Seats Only":
+            if temp == "window":
                 seat_dict = self.load_parameters('config/f_seating_half_edge.json')
-            else:
+            elif temp == "zigzag"
                 seat_dict = self.load_parameters('config/f_seating_half_zig.json')
+            else:
+                print('error temp bad')
         # evaluate temp based on # students
         num_kids = self.students_var
         temp_dict = {}
