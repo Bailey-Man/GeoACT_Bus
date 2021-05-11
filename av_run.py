@@ -32,7 +32,7 @@ def main(targets):
     # for i in sys.argv:
     # print('t', targets, '0', args.0])
     # number each of these:
-    floor_area = float(args.class_type) * 2.3 * 3.28084 # square feet
+    floor_area = float(args.bus_type) * 2.3 * 3.28084 # square feet
     trip_duration = args.trip_duration
     number_of_students = args.num_students
     mask = args.mask_wearing
@@ -40,12 +40,12 @@ def main(targets):
     num_sims_ = 100 # default
     mask_eff_ = .1 # default
     seating_ = args.seating_type
-    air_exchange_rate = 20 # default for a class
+    air_exchange_rate = 20 # default for a bus
 
-    class_type_arg = '-l' #length of class
+    bus_type_arg = '-l' #length of bus
     trip_duration_arg = '-t'
     seating_chart_type_arg = '-s'
-    num_students_on_class = '-n'
+    num_students_on_bus = '-n'
     mask_wearing_arg = '-m' # likelihood
     windows_arg = '-w'
 
@@ -87,7 +87,7 @@ def main(targets):
 
     airavata_output = user_viz()
     # run all functions
-    airavata_output.plot_class_seating()
+    airavata_output.plot_bus_seating()
 
     airavata_output.conc_heat()
 
@@ -100,7 +100,7 @@ def main(targets):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--class_type', required=True)
+    parser.add_argument('-l', '--bus_type', required=True)
     parser.add_argument('-t', '--trip_duration', required=True)
     parser.add_argument('-s', '--seating_type', required=True)
     parser.add_argument('-n', '--num_students', required=True)

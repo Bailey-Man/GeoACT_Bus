@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 sys.path.insert(0, 'src')
-from class import class_sim
+from bus import bus_sim
 from infection import return_aerosol_transmission_rate
 
 def load_parameters_av(filepath):
@@ -43,12 +43,12 @@ class user_viz():
         self.input_params2 = load_parameters_av(filepath='results/aerosol_data_.json')
         self.mask_eff = self.input_params2["mask_passage_prob"]
         self.seat_var = self.input_params["seating_choice"]
-        self.class_trips = []
+        self.bus_trips = []
 
-        # class dimensions
+        # bus dimensions
         # width and height are relatively standard: ergo area is 2.3 * L
-        self.class_length = self.input_params["class_length"]
-        self.floor_area = self.class_length * 2.3 # Sq M. (TODO: convert to units?)
+        self.bus_length = self.input_params["bus_length"]
+        self.floor_area = self.bus_length * 2.3 # Sq M. (TODO: convert to units?)
 
 
         # functions
@@ -72,7 +72,7 @@ class user_viz():
 
         return parameter
 
-    def generate_class_seating(self):
+    def generate_bus_seating(self):
         '''
         based on full vs zigzag vs edge
         based on number of students
@@ -95,23 +95,23 @@ class user_viz():
         # print(temp_dict)
         return temp_dict
 
-    def plot_class_seating(self):
+    def plot_bus_seating(self):
         '''
         plot avg based on temp dict
 
-        TODO: background of class
+        TODO: background of bus
         '''
-        t_dict = self.generate_class_seating()
+        t_dict = self.generate_bus_seating()
         x_arr = []
         y_arr = []
-        # print('class_seat_figure')
+        # print('bus_seat_figure')
         plt.figure(figsize=(2,2))
         plt.gcf().set_size_inches(2,2)
         # plt.gcf().set_size_inches(2,2)
         for i in t_dict.items():
             x_arr.append(i[1][1])
             y_arr.append(i[1][0])
-        # im = plt.imread('results/class_img.png')
+        # im = plt.imread('results/bus_img.png')
         # plt.imshow(im)
         plt.title('Approximate Seating Chart', fontsize=7)
         plt.xticks(np.array([1.2, 1.8, 2.2, 3.8, 4.2, 4.8]))
@@ -133,8 +133,8 @@ class user_viz():
         '''
         average over model runs: out_matrix averages
         '''
-        class_seating = self.generate_class_seating()
-        class_trip, conc_array, out_mat, chance_nonzero = class_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
+        bus_seating = self.generate_bus_seating()
+        bus_trip, conc_array, out_mat, chance_nonzero = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
         # print('conc_heat_figure')
         # plt.figure(figsize=(5,4))
         # plt.subplots()
@@ -161,7 +161,7 @@ class user_viz():
         plt.annotate(xy=(-1, 24), text='back', fontsize=5)
         # log scale vs regular scale + 'be not afraid'
         plt.axis('off')
-        fig.text(.1, .01, 'These heatmaps show relative airflow within the cabin \nof the class in terms of its effect on concentration \nof COVID-19 Particles (averaged across 100 simulations)', fontsize=4)
+        fig.text(.1, .01, 'These heatmaps show relative airflow within the cabin \nof the bus in terms of its effect on concentration \nof COVID-19 Particles (averaged across 100 simulations)', fontsize=4)
         plt.savefig('results/relative_airflow.png', dpi=300)
 
         print('relative airflow complete!')
@@ -173,19 +173,19 @@ class user_viz():
         '''
         '''
 
-        # run class model
-        class_seating = self.generate_class_seating()
-        class_trip, conc_array, out_mat, chance_nonzero = class_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
+        # run bus model
+        bus_seating = self.generate_bus_seating()
+        bus_trip, conc_array, out_mat, chance_nonzero = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var) # replace default with selected
         self.chance_nonzero = chance_nonzero
         # print(chance_nonzero, 'more than none?')
         self.conc_array = conc_array
-        self.class_trips.append(class_trip)
+        self.bus_trips.append(bus_trip)
         # print('model_run start')
         plt.figure(figsize=(5,4))#, dpi=300)
         plt.gcf().set_size_inches(5,4)
         # plt.gcf().set_size_inches(5,4)
         # ax = plt.gca()
-        pd.Series(class_trip).plot.kde(lw=2, c='r')
+        pd.Series(bus_trip).plot.kde(lw=2, c='r')
         plt.title('Density estimation of exposure')
         # plt.xlim(0, .004)
         # print(plt.xticks())
