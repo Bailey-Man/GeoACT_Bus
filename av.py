@@ -84,7 +84,7 @@ class user_viz():
         else:
             if temp == "window":
                 seat_dict = self.load_parameters('config/f_seating_half_edge.json')
-            elif temp == "zigzag"
+            elif temp == "zigzag":
                 seat_dict = self.load_parameters('config/f_seating_half_zig.json')
             else:
                 print('error temp bad')
