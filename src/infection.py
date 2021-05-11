@@ -10,14 +10,14 @@ import os
 
 floor_area = 86.02  # ft2 # 11.4 m * 2.3 m * (m^2->ft^2) = 86.02 ~= 86 ft^2
 mean_ceiling_height = 12  # ft # 1.85 m -> ft = 6.06 ~= 6 ft
-air_exchange_rate = 20  # /hr (air changes per hour (ACH)) #moving bus mph average
+air_exchange_rate = 20  # /hr (air changes per hour (ACH)) #moving class mph average
 
 
 ##Assumed Parameter Identified as 0.2 for Classrooms, 1.0 for outdoors#
-# and .5 for buses with windows open
+# and .5 for classes with windows open
 primary_outdoor_air_fraction = 0.5  # 1.0 = natural ventilation
 aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
-# bus has no filter
+# class has no filter
 
 #Average daily RH for San Diego is 69%
 relative_humidity = 0.69
