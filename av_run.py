@@ -27,7 +27,7 @@ def main(targets):
         default_data = json.load(f)
     with open('config/aerosol.json') as g:
         aerosol_data = json.load(g)
-    print(targets)
+    # print(targets)
 
     # for i in sys.argv:
     # print('t', targets, '0', args.0])

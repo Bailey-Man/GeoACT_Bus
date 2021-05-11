@@ -79,7 +79,7 @@ class user_viz():
         '''
         # get seating type:
         temp = self.seat_var
-        print(temp, type(temp), 'temp')
+        # print(temp, type(temp), 'temp')
         if temp == "full":
             seat_dict = self.load_parameters('config/f_seating_full.json')
         else:
@@ -91,7 +91,7 @@ class user_viz():
                 print('error temp bad')
         # evaluate temp based on # students
         num_kids = self.students_var
-        print(num_kids, 'num_kids')
+        # print(num_kids, 'num_kids')
         temp_dict = {}
         for i in range(int(num_kids)):
             temp_dict[str(i)] = seat_dict[str(i)]
