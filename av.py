@@ -82,6 +82,7 @@ class user_viz():
         if temp == "Full Occupancy":
             seat_dict = self.load_parameters('config/f_seating_full.json')
         else:
+            print(temp, 'temp')
             if temp == "Window Seats Only":
                 seat_dict = self.load_parameters('config/f_seating_half_edge.json')
             else:
