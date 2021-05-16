@@ -79,7 +79,7 @@ class user_viz():
         '''
         # get seating type:
         temp = self.seat_var
-        print(temp, type(temp), 'temp')
+        # print(temp, type(temp), 'temp')
         if temp == "full":
             seat_dict = self.load_parameters('config/f_seating_full.json')
         else:
@@ -91,7 +91,7 @@ class user_viz():
                 print('error temp bad')
         # evaluate temp based on # students
         num_kids = self.students_var
-        print(num_kids, 'num_kids')
+        # print(num_kids, 'num_kids')
         temp_dict = {}
         for i in range(int(num_kids)):
             temp_dict[str(i)] = seat_dict[str(i)]
@@ -122,7 +122,7 @@ class user_viz():
         plt.yticks(np.arange(-.5, 23.5, 1))
         plt.grid(True)
         # plt.tick_params(axis='both', left='off', top='off', right='off', bottom='off', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
-        plt.scatter(x=x_arr, y=y_arr)#, marker='_')
+        plt.scatter(x=x_arr, y=y_arr, s=5)#, marker='_')
         plt.xticks(c='w')
         plt.yticks(c='w')
         # plt.axis('off') # set axis to be blank
@@ -145,14 +145,14 @@ class user_viz():
         y_arr = []
         for i in seating.items():
             x_arr.append(i[1][1])
-            y_arr.append(i[1][0])
+            y_arr.append(i[1][0] * 1.5 + 1)
 
         rot = mpl.transforms.Affine2D().rotate_deg(180)
         fig = plt.figure()
         ax1 = fig.add_subplot(1, 2, 1)
         ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
         plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        plt.scatter(x=x_arr, y=y_arr)
+        plt.scatter(x=x_arr, y=y_arr, s=5)
         plt.gcf().set_size_inches(2,2)
         # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
         plt.annotate(xy=(-1, -1), text='front', fontsize=5)
@@ -163,14 +163,14 @@ class user_viz():
         ax2 = fig.add_subplot(1,2,2)
         ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
         plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        plt.scatter(x=x_arr, y=y_arr)
+        plt.scatter(x=x_arr, y=y_arr, s=5)
         plt.gcf().set_size_inches(2,2)
         plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
         plt.annotate(xy=(-1, -1), text='front', fontsize=5)
         plt.annotate(xy=(-1, 24), text='back', fontsize=5)
         # log scale vs regular scale + 'be not afraid'
         plt.axis('off')
-        fig.text(.1, .01, 'These heatmaps show relative airflow within the cabin \nof the bus in terms of its effect on concentration \nof COVID-19 Particles', fontsize=4)
+        fig.text(.1, .01, 'These heatmaps show the relative concentration\nof viral particles in the bus during this simulation\n', fontsize=4)
         plt.savefig('results/relative_airflow.png', dpi=300)
 
         print('relative airflow complete!')
