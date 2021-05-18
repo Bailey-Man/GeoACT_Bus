@@ -324,6 +324,7 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 tr
                         masks = np.random.choice([.1, 1], p=[mask_, 1-mask_])
                     else:
                         # print(mask, type(mask))
+                        # m_var = mask / 100
                         masks = np.random.choice([.1, 1], p=[mask, 1-mask])
 
                     x1, x2, y1, y2 = get_distance_bus(flow_seating, student_id, initial_inf_id)
