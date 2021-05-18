@@ -203,21 +203,21 @@ class user_viz():
         # print(len(bus_trip))
 
 
-        pd.Series(bus_trip[1]).plot.hist(color='blue', linewidth=2, edgecolor='black',bins=np.arange(0, .056, .001))
+        pd.Series(bus_trip[2]).plot.hist(color='blue', linewidth=2, edgecolor='black',bins=14)
         # print('transmissions', len(bus_trip), bus_trip)
         if int(self.window_var) == 0:
             win_v = 'closed'
         else:
             win_v = 'open ' + str(self.window_var) + ' inches'
-        # plt.title('Distribution of average likelihood of infection windows ' + win_v)
-        plt.xlim(0, .05)
+        plt.title('Distribution of average likelihood of infection with windows ' + win_v)
+        # plt.xlim(0, .05)
         # set x ticks
         # str_x = np.array([str(round(int * 100, 2))+'%' for int in temp_x])
         # plt.xticks(temp_x, str_x)
         plt.ticklabel_format(axis="x")#, style="sci", scilimits=(0,0))
         # rescale y axis to be % based
-        plt.xlabel('Risk is averaged within and across all runs')
-        plt.ylabel('Density estimation of probability of occurrence')
+        plt.xlabel('Likelihood of infection')
+        plt.ylabel('Number of Students')
         plt.savefig('results/window_curve.png', dpi=300)
         # plt.show()
         plt.close()
