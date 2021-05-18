@@ -128,29 +128,46 @@ def load_parameters(filepath):
     return parameter
 # print(os.getcwd(), 'cwd')
 
-dp = load_parameters('results/aerosol_data_.json')
 
 
 
 
-def return_aerosol_transmission_rate(floor_area=dp['floor_area'], room_height=dp['mean_ceiling_height'], air_exchange_rate=dp['air_exchange_rate'],
-                            aerosol_filtration_eff=dp['aerosol_filtration_eff'], relative_humidity=dp['relative_humidity'], breathing_flow_rate=dp['breathing_flow_rate'],
-                            exhaled_air_inf=dp['exhaled_air_inf'], max_viral_deact_rate=dp['max_viral_deact_rate'], mask_passage_prob=dp['mask_passage_prob'],
-                            max_aerosol_radius=2, primary_outdoor_air_fraction=0.2):
+def return_aerosol_transmission_rate():
                             '''
 
                             '''
+
+                            dp = load_parameters('results/aerosol_data_.json')
+                            floor_area=dp['floor_area'],
+                            room_height=dp['mean_ceiling_height'],
+                            air_exchange_rate=dp['air_exchange_rate'],
+                            aerosol_filtration_eff=dp['aerosol_filtration_eff'],
+                            relative_humidity=dp['relative_humidity'],
+                            breathing_flow_rate=dp['breathing_flow_rate'],
+                            exhaled_air_inf=dp['exhaled_air_inf'],
+                            max_viral_deact_rate=dp['max_viral_deact_rate'],
+                            mask_passage_prob=dp['mask_passage_prob'],
+                            max_aerosol_radius=2,
+                            primary_outdoor_air_fraction=dp['primary_outdoor_air_fraction']
+
+
+
+
                             mean_ceiling_height_m = mean_ceiling_height * 0.3048 #m3
                             room_vol = floor_area * mean_ceiling_height  # ft3
-                            room_vol_m = 0.0283168 * room_vol  # m3
-                            fresh_rate = room_vol * int(air_exchange_rate) / 60  # ft3/min
+                            # print(mean_ceiling_height)
+                            room_vol_m = 0.0283168 * room_vol[0]  # m3
+                            print('ach', air_exchange_rate[0])
+                            fresh_rate = room_vol[0] * (air_exchange_rate[0]) / 60  # ft3/min
                             recirc_rate = fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
-                            air_filt_rate = aerosol_filtration_eff * recirc_rate * 60 / room_vol  # /hr
-                            eff_aerosol_radius = ((0.4 / (1 - relative_humidity)) ** (1 / 3)) * max_aerosol_radius
-                            viral_deact_rate = max_viral_deact_rate * relative_humidity
+                            air_filt_rate = aerosol_filtration_eff[0] * recirc_rate * 60 / room_vol[0]  # /hr
+                            eff_aerosol_radius = ((0.4 / (1 - relative_humidity[0])) ** (1 / 3)) * max_aerosol_radius[0]
+                            viral_deact_rate = max_viral_deact_rate[0] * relative_humidity[0]
                             sett_speed = 3 * (eff_aerosol_radius / 5) ** 2  # mm/s
                             sett_speed = sett_speed * 60 * 60 / 1000  # m/hr
-                            conc_relax_rate = int(air_exchange_rate) + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
-                            airb_trans_rate = ((breathing_flow_rate * float(mask_passage_prob)) ** 2) * exhaled_air_inf / (room_vol_m * conc_relax_rate)
-
+                            # print(air_exchange_rate, air_filt_rate, viral_deact_rate, sett_speed, mean_ceiling_height_m) ###########################################
+                            conc_relax_rate = int(air_exchange_rate[0]) + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
+                            # print('vars', breathing_flow_rate, mask_passage_prob, exhaled_air_inf, room_vol_m, conc_relax_rate, recirc_rate)
+                            airb_trans_rate = ((breathing_flow_rate[0] * float(mask_passage_prob[0])) ** 2) * exhaled_air_inf[0] / (room_vol_m * conc_relax_rate)
+                            print('airborne transmission rate', airb_trans_rate)
                             return airb_trans_rate #This is mean number of transmissions per hour between pair of infected / healthy individuals

@@ -25,7 +25,7 @@ def main(targets):
     '''
     with open('config/default.json') as f:
         default_data = json.load(f)
-    with open('config/aerosol.json') as g:
+    with open('results/aerosol_data_.json') as g:
         aerosol_data = json.load(g)
     # print(targets)
 
@@ -40,7 +40,15 @@ def main(targets):
     num_sims_ = 100 # default
     mask_eff_ = .1 # default
     seating_ = args.seating_type
-    air_exchange_rate = 20 # default for a bus
+    air_exchange_rate = aerosol_data['air_exchange_rate']
+    # print(windows, 'win')
+    if windows == 0 or windows == '0':
+        air_exchange_rate = 2 # TESTING for windows closed
+    elif windows == 6 or windows== '6':
+        air_exchange_rate = 20
+    else:
+        air_exchange_rate= 20
+        print('ERROR IN ACH')
 
     bus_type_arg = '-l' #length of bus
     trip_duration_arg = '-t'
@@ -50,26 +58,23 @@ def main(targets):
     windows_arg = '-w'
 
 
+    # print(targets)
 
-
-
-        # ask kaushik about how inputs work
-        # replace values with airavata inputs (command line?)
-
-        # if this causes an error, change logic to alter default json file
-        # and/or create a new file w/ their parameter selection
+    # default values taken from:
+    # https://indoor-covid-safety.herokuapp.com/apps/advanced
+    # defaults
 
     # update aerosol to results
     aerosol_data["floor_area"] = floor_area
     aerosol_data["mask_passage_prob"] = mask_eff_
     aerosol_data["mean_ceiling_height"] = 6.07
-    aerosol_data["air_exchange_rate"] = air_exchange_rate
-    aerosol_data["primary_outdoor_air_fraction"] = 0.2
-    aerosol_data["aerosol_filtration_eff"] = 0
+    aerosol_data["air_exchange_rate"] = air_exchange_rate # Recirc = (vol * ACH / 60) * (1/1 - primary_outdoor_air_fraction)
+    aerosol_data["primary_outdoor_air_fraction"] = .79 # ACH / (ACH + Recirc)
+    aerosol_data["aerosol_filtration_eff"] = 1
     aerosol_data["relative_humidity"] = 0.69
-    aerosol_data["breathing_flow_rate"] = 0.5
+    aerosol_data["breathing_flow_rate"] = 0.29
     aerosol_data["max_aerosol_radius"] = 2
-    aerosol_data["exhaled_air_inf"] = 0
+    aerosol_data["exhaled_air_inf"] = 2.04
     aerosol_data["max_viral_deact_rate"] = 0.3
 
     # update default to results
@@ -85,6 +90,10 @@ def main(targets):
     with open('results/aerosol_data_.json', 'w') as g:
         json.dump(aerosol_data, g)
 
+    print('finis')
+
+    return
+def main_2():
     airavata_output = user_viz()
     # run all functions
     airavata_output.plot_bus_seating()
@@ -92,9 +101,7 @@ def main(targets):
     airavata_output.conc_heat()
 
     airavata_output.model_run()
-
-    print('finis')
-
+    print('av finish')
     return
 
 if __name__ == '__main__':
@@ -107,7 +114,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--mask_wearing', required=True)
     parser.add_argument('-w', '--windows', required=True)
     args = parser.parse_args()
-    print(args)
+    # print(args)
 
 
     targets = args
@@ -115,3 +122,4 @@ if __name__ == '__main__':
     # targets = parser.parse_args()
     # print(targets, 'targe')
     main(targets)
+    main_2()

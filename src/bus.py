@@ -6,6 +6,7 @@ from scipy import stats
 import sys
 import json
 import os
+import matplotlib.pyplot as plt
 
 # import from infection.py
 from infection import generate_infectivity_curves, plot_infectivity_curves, return_aerosol_transmission_rate
@@ -223,7 +224,7 @@ def concentration_distribution(num_steps, num_sims, bus_flow_pos):
 
     return temp_array, avg_array
 
-def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with given params
+def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 trip with given params
     '''
     in:
     mask %
@@ -231,21 +232,29 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
     students: 28 or 56
 
     '''
-    if flow_seats_ == "Full Occupancy":
+    if flow_seats_ == "full":
         seat_dict = load_parameters('config/f_seating_full.json')
     else:
-        if flow_seats_ == "Window Seats Only":
+        if flow_seats_ == "window":
             seat_dict = load_parameters('config/f_seating_half_edge.json')
-        else:
+        elif flow_seats_ == "zigzag":
             seat_dict = load_parameters('config/f_seating_half_zig.json')
+        else:
+            print('ERROR')
     flow_seating = {key: value for key, value in seat_dict.items() if int(key) < n_students}
     # initialize model run data storage
     who_infected_bus = {str(i): 0 for i in range(len(flow_seating.keys()))}
-    init_inf_dict = who_infected_bus.copy()
+    init_inf_dict = {str(i): 0 for i in range(len(flow_seating.keys()))}
     n_steps = int(int(trip_len) / 5)
     transmission_bus_rates = {i: [] for i in flow_seating.keys()}
-    temp_rates = transmission_bus_rates.copy()
-    averaged_all_runs = transmission_bus_rates.copy()
+    temp_rates = {i: [] for i in flow_seating.keys()}
+    averaged_all_runstep = {str(i): 0 for i in flow_seating.keys()}
+    transmission_by_step = {str(i): [] for i in flow_seating.keys()}
+    all_transmissions = []
+    scatter_dist = {"distance": [], "transmission rate": []}
+    infection_over_run = {str(i): 0 for i in range(len(flow_seating.keys()))}
+    close_scatter_dist = {"distance": [], "transmission rate": []}
+    far_scatter_dist = {"distance": [], "transmission rate": []}
 
     # get infective_df
     temp = generate_infectivity_curves()
@@ -255,7 +264,9 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
     g_shape, g_loc, g_scale = s_l_s_infectivity_density
 
     # print(dp, 'default')
-    bus_aerosol = return_aerosol_transmission_rate(aerosol_params['floor_area'], aerosol_params['mean_ceiling_height'], aerosol_params['air_exchange_rate'], aerosol_params['aerosol_filtration_eff'], aerosol_params['relative_humidity'], aerosol_params['breathing_flow_rate'], aerosol_params['exhaled_air_inf'], aerosol_params['max_viral_deact_rate'], aerosol_params['mask_passage_prob'])
+    # print(window_, 'window var')
+    bus_aerosol = return_aerosol_transmission_rate()#aerosol_params['floor_area'], aerosol_params['mean_ceiling_height'], aerosol_params['air_exchange_rate'], aerosol_params['aerosol_filtration_eff'], aerosol_params['relative_humidity'], aerosol_params['breathing_flow_rate'], aerosol_params['exhaled_air_inf'], aerosol_params['max_viral_deact_rate'], aerosol_params['mask_passage_prob'])
+
 
     concentration_array, avg_matrix = concentration_distribution(n_steps, n_sims, bus_flow_pos)
     # return average concentration over run
@@ -273,8 +284,11 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
         for y in range(concentration_array[conc].shape[0]):
             for x in range(concentration_array[conc].shape[1]):
                 if out_matrix[y][x] < 0:
-                    out_matrix[y][x] *= -1
-                # out_matrix[y][x] = out_matrix[y][x] / max
+                    out_matrix[y][x] = .0001
+                else:
+                    out_matrix[y][x] = out_matrix[y][x] / max_val
+
+    # isn't
 
     # print(concentration_, 'concentration')
     run_average_array = []
@@ -296,7 +310,6 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
         # print(temp_average_array)
 
         run_chance_of_0 = 1
-
 
         for step in range(n_steps): # infection calculated for 5-minute timesteps
             # bus trip 1way
@@ -320,14 +333,18 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
                     # for concentraion calculation
                     air_y, air_x = flow_seating[str(student_id)]
                     # print(student_id, 'id', air_x, air_y)
+                    # print
 
                     # proxy for concentration
-                    air_flow = concentration_[air_y][air_x]
+                    # print(out_matrix, 'out')
+                    air_flow = out_matrix[round(air_y * 1.5 + 1)][air_x]
 
                     transmission = (init_infectivity * chu_distance * masks) + (air_flow * bus_aerosol)
-                    if transmission > 0.03:
-                        # print('why')
-                        transmission = .03
+                    # print(transmission)
+                    # if transmission > 0.3:
+                    #     # print(transmission)
+                    #     # print('this is in case of calculation errors, shouldnt be printed')
+                    #     transmission = .03
                         # print(air_flow, 'af')# * bus_aerosol)
                     # calculate transmissions
                     if np.random.choice([True, False], p=[transmission, 1-transmission]):
@@ -337,14 +354,33 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
 
                     # output temp is for each step
                     temp_average_array[student_id].append(transmission)
+                    all_transmissions.append(transmission)
+                    # print(distance, 'd')
+                    if distance < 1:
+                        close_scatter_dist["distance"].append(distance)
+                        close_scatter_dist["transmission rate"].append(transmission)
+                    elif distance > 2:
+                        far_scatter_dist["distance"].append(distance)
+                        far_scatter_dist["transmission rate"].append(transmission)
+                    else:
+                        scatter_dist["distance"].append(distance)
+                        scatter_dist["transmission rate"].append(transmission)
+
+
         run_average_array.append(1 - run_chance_of_0) # add chance of nonzero to array
-        # takes average over model run
         for id in flow_seating.keys():
             if len(temp_average_array[id]) > 0:
-                transmission_bus_rates[id] = np.mean(temp_average_array[id])
+                transmission_by_step[id].append(np.mean(temp_average_array[id]))
+            else:
+                transmission_by_step[id].append(0)
+
     # takes average over all runs
     for id in flow_seating.keys():
-        averaged_all_runs[id] = np.mean(transmission_bus_rates[id])
+        avg = np.mean(transmission_by_step[id])
+        # print(avg, 'avg')
+        averaged_all_runstep[id] = avg
+        infection_over_run[id] = (1 - (1-avg)**n_steps)
+
 
     # average risk of >= 1 infection across all model runs
     if len(run_average_array) == 0:
@@ -353,4 +389,8 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_): # do 1 trip with g
     # print('initially infected counts', init_inf_dict)
     # OUTPUT AVERAGE LIKELIHOOD OF >= 1 INFECTION
     # print(n_students)
-    return averaged_all_runs, concentration_array, out_matrix, run_avg_nonzero
+    bus_out_array = [all_transmissions, averaged_all_runstep, infection_over_run, close_scatter_dist, scatter_dist, far_scatter_dist]
+    # print(close_scatter_dist['distance'][:10])
+    # print(far_scatter_dist['transmission rate'][:10])
+    # print('lens', len(close_scatter_dist['distance']), len(scatter_dist['distance']), len(far_scatter_dist['distance']))
+    return bus_out_array, concentration_array, out_matrix, run_avg_nonzero, concentration_ # added averaged concentration as avg_matrix
