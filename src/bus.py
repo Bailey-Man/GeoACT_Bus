@@ -357,15 +357,16 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 tr
                     temp_average_array[student_id].append(transmission)
                     all_transmissions.append(transmission)
                     # print(distance, 'd')
-                    if distance < 1:
+                    if distance < .5:
                         close_scatter_dist["distance"].append(distance)
                         close_scatter_dist["transmission rate"].append(transmission)
-                    elif distance > 2:
+                    else:# distance > 2:
                         far_scatter_dist["distance"].append(distance)
                         far_scatter_dist["transmission rate"].append(transmission)
-                    else:
-                        scatter_dist["distance"].append(distance)
-                        scatter_dist["transmission rate"].append(transmission)
+                    # else:
+                    #     pass
+                    #     scatter_dist["distance"].append(distance)
+                    #     scatter_dist["transmission rate"].append(transmission)
 
 
         run_average_array.append(1 - run_chance_of_0) # add chance of nonzero to array

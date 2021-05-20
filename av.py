@@ -122,9 +122,10 @@ class user_viz():
         plt.xticks(np.array([1.2, 1.8, 2.2, 3.8, 4.2, 4.8]))
         plt.yticks(np.arange(-.5, 23.5, 1))
         plt.grid(True)
-        # plt.tick_params(axis='both', left='off', top='off', right='off', bottom='off', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
+        plt.tick_params(axis='both', left='off', top='off', right='off', bottom='off', labelleft='off', labeltop='off', labelright='off', labelbottom='off')
         plt.scatter(x=x_arr, y=y_arr, s=5)#, marker='_')
-        plt.axis('off')
+        plt.gca().get_xaxis().set_visible(False)
+        plt.gca().get_yaxis().set_visible(False)
         # plt.axis('off') # set axis to be blank
         # plt.show()
 
