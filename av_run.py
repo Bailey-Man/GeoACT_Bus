@@ -21,7 +21,7 @@ import json
 
 def main(targets):
     '''
-    targets = airavata inputs
+    Set json files
     '''
     with open('config/default.json') as f:
         default_data = json.load(f)
@@ -94,8 +94,15 @@ def main(targets):
 
     return
 def main_2():
+    '''
+    Run functions using new json files
+    '''
+
     airavata_output = user_viz()
     # run all functions
+
+    # airavata_output.plot_all() # includes 3 hist plots + kde + scatter
+    # make it run the sim on init!! then functions will plot from the same data
     airavata_output.plot_bus_seating()
 
     airavata_output.conc_heat()

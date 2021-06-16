@@ -169,5 +169,5 @@ def return_aerosol_transmission_rate():
                             conc_relax_rate = int(air_exchange_rate[0]) + air_filt_rate + viral_deact_rate + sett_speed / mean_ceiling_height_m  # /hr
                             # print('vars', breathing_flow_rate, mask_passage_prob, exhaled_air_inf, room_vol_m, conc_relax_rate, recirc_rate)
                             airb_trans_rate = ((breathing_flow_rate[0] * float(mask_passage_prob[0])) ** 2) * exhaled_air_inf[0] / (room_vol_m * conc_relax_rate)
-                            print('airborne transmission rate', airb_trans_rate)
+                            # print('airborne transmission rate', airb_trans_rate)
                             return airb_trans_rate #This is mean number of transmissions per hour between pair of infected / healthy individuals
