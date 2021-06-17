@@ -100,13 +100,13 @@ class user_viz():
         # print(temp_dict, 'temp')
         return temp_dict
 
-    def plot_bus_seating(self):
+    def plot_bus_seating(self, seating):
         '''
         plot avg based on temp dict
 
         TODO: background of bus
         '''
-        t_dict = self.generate_bus_seating()
+        t_dict = seating
         x_arr = []
         y_arr = []
         # print('bus_seat_figure')
@@ -129,18 +129,20 @@ class user_viz():
         # plt.axis('off') # set axis to be blank
         # plt.show()
 
-        plt.savefig('results/seating_plot.png', dpi=300)
-        print('plot seating complete!')
 
+        plt.savefig('results/seating_plot.png', dpi=300)
+        print('Seating Plot Complete')
         return
 
     def conc_heat(self):
         '''
         average over model runs: out_matrix averages
         '''
+
+
         bus_seating = self.generate_bus_seating()
         bus_trip, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # replace default with selected
-
+        self.plot_bus_seating(bus_seating)
         x_arr = []
         y_arr = []
         for i in bus_seating.items():
@@ -178,16 +180,39 @@ class user_viz():
         print('relative airflow complete!')
         # plt.show()
 
-        return
+
+                #### LOCAL / AV OUTPUT
+                # matshow triple
+                # 1 = worst case infectivity exhalation rate
+
+                # 2 = best case
+
+                # 3 = this case
+
+                # concentration average:
+                # take average of last step of 10k samples
+
+
+        return bus_trip, conc_array, out_mat, chance_nonzero, avg_mat, bus_seating
+
     # function to run model with user input
     def model_run(self):
         '''
-        
+        1. call bus_trip
+
+        2. create figure
+        2.1 start plotting hist
+        2.2 window curve
+        2.3 5-min transmission likelihood
+        2.4 Averaged by Run and by Step
+        2.5 Infections by run
+        2.6 Scatter of distance vs infection
+        2.7 Transmission Rates
+
         '''
 
         # run bus model
-        bus_seating = self.generate_bus_seating()
-        bus_trip, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # replace default with selected
+        bus_trip, conc_array, out_mat, chance_nonzero, avg_mat, bus_seating = self.conc_heat() # THIS CASE
         self.chance_nonzero = chance_nonzero
         # print(chance_nonzero, 'more than none?')
         self.conc_array = conc_array
@@ -196,6 +221,60 @@ class user_viz():
         plt.figure(figsize=(5,4))#, dpi=300)
         plt.gcf().set_size_inches(5,4)
 
+        output_filepath = "/output/bus_simulation_" + str(self.students_var) + '_' + str(self.mask_var)+ '_' + str(self.number_simulations) + '_' + str(self.trip_length) + '_' + str(self.seat_var) + '_' + str(self.window_var) # str(i) for i in [self.inputs]
+
+
+        # bus_trip = this case
+        w_bus_trip, w_conc_array, w_out_mat, w_chance_nonzero, w_avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # WORST CASE
+
+        b_bus_trip, b_conc_array, b_out_mat, b_chance_nonzero, b_avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # BEST CASE
+
+
+
+        # send plots to /output
+
+        # HISTOGRAMS
+        # Hist 1 Seating
+        fig, axs = plt.subplots()
+        seat_types = ['full', 'window', 'zigzag']
+        for s in seat_types:
+            bus_trip, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, s, self.window_var) # SEATING
+            print(bus_trip)
+            pd.Series(bus_trip[4]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
+        plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
+        plt.xlabel('Mean likelihood of transmission at each step')
+        plt.ylabel('Number of students with this average risk of transmission')
+        seat_filepath = output_filepath + '_seating.png'
+        plt.savefig(seat_filepath, dpi=300)
+
+        # Hist 2 Windows
+        window_types = ['closed', 'open']
+        for w in range(len(window_types)):
+            window_ = 6 * w
+            bus_trip, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
+
+            pd.Series(bus_trip[4]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
+
+        plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
+        plt.xlabel('Mean likelihood of transmission at each step')
+        plt.ylabel('Number of students with this average risk of transmission')
+        seat_filepath = output_filepath + '_windows.png'
+        plt.savefig(seat_filepath, dpi=300)
+
+        # Hist 3 Masks
+        mask_amount = [100, 90, 80, 70]
+        for m in mask_amount:
+            bus_trip, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), m, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # SEATING
+            pd.Series(bus_trip[-1]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
+
+        plt.legend(['100% Mask compliance', '90% Mask compliance', '80% Mask compliance', '70% Mask compliance'])
+        plt.xlabel('Mean likelihood of transmission at each step')
+        plt.ylabel('Number of students with this average risk of transmission')
+        seat_filepath = output_filepath + '_masks.png'
+        plt.savefig(seat_filepath, dpi=300)
+
+        # # KDEPLOT and SCATTERPLOT
+        # # KDE
         # pd.Series(bus_trip).plot.kde(lw=2, c='r') # THIS KDEPLOT IS TO LOOK COOL AND DO NOTHING
         # rework bus_trip into array of outputs:
         # All Transmission rates
@@ -203,82 +282,40 @@ class user_viz():
         # Averaged /Step Student/Run rates
         # All Averaged /Step rates
         # print(len(bus_trip))
+        #     fig, axes = plt.figure()
+        #     print('please')
+        #
+        #
+        # fig, axs = plt.subplots(2,2)
+        # fig.tight_layout()
+        # # axs[0,0] = pd.Series(bus_trip[0]).plot.kde(lw=2, color='blue')
+        # # axs[1,0] = pd.Series(bus_trip[1]).plot.kde(lw=2, color='r')
+        # axs[0,0].hist(bus_trip[0], bins=np.arange(0, .03, .001))
+        # axs[0,0].set_title('All 5-minute transmission likelihoods')
+        #
+        # pd.Series(bus_trip[1]).plot.kde(ax=axs[1,0])#), bins=14)#, bins=np.arange(0, .03, .003))
+        # axs[1,0].set_title('Averaged by Run and by Step')
+        #
+        # axs[0,1].hist(pd.Series(bus_trip[2]))#, bins=np.arange(0, .1, .001))
+        # axs[0,1].set_title('Infections by run')
+        #
+        # # print(bus_trip[3]["0"])
+        # # axs[1,1] = fig.add_subplot(111)
+        # axs[1,1].scatter(bus_trip[5]["distance"], bus_trip[5]["transmission rate"], s=2, color='green', label='far')
+        # axs[1,1].scatter(bus_trip[4]["distance"], bus_trip[4]["transmission rate"], s=2, color='yellow', label='nearby')
+        # axs[1,1].scatter(bus_trip[3]["distance"], bus_trip[3]["transmission rate"], s=2, color='red', label='neighbors')
+        # axs[1,1].set_title('Distance from infected vs transmission rate')
+        # axs[1,1].set_xlabel('Distance in Meters')
+        # axs[1,1].set_ylabel('Transmission Rate')
+        # plt.legend()
+        # plt.savefig('results/transmission_rates.png', dpi=300)
+        # plt.close()
 
 
-        pd.Series(bus_trip[2]).plot.hist(color='blue', linewidth=2, edgecolor='black',bins=14, alpha=.7)
-        # print('transmissions', len(bus_trip), bus_trip)
-        if int(self.window_var) == 0:
-            win_v = 'closed'
-        else:
-            win_v = 'open'
-        plt.title(f'Average chance of infection with {win_v} windows')
-        plt.ticklabel_format(axis="x")#, style="sci", scilimits=(0,0))
+        # KDE2? One for each student with overlapped sections darker
 
-        plt.gca().set_xticklabels(['{:.1f}%'.format(x*100) for x in plt.gca().get_xticks()])
-        # rescale y axis to be % based
-        plt.xlabel('Chance of infection')
-        plt.ylabel('Number of Students')
-        plt.tight_layout()
-        plt.savefig('results/window_curve.png', dpi=300)
-        # plt.show()
-        plt.close()
-
-        # fig, axes = plt.figure()
-        # print('please')
-        fig, axs = plt.subplots(2,2)
-        fig.tight_layout()
-        # axs[0,0] = pd.Series(bus_trip[0]).plot.kde(lw=2, color='blue')
-        # axs[1,0] = pd.Series(bus_trip[1]).plot.kde(lw=2, color='r')
-        axs[0,0].hist(bus_trip[0], bins=np.arange(0, .03, .001))
-        axs[0,0].set_title('All 5-minute transmission likelihoods')
-
-        pd.Series(bus_trip[1]).plot.kde(ax=axs[1,0])#), bins=14)#, bins=np.arange(0, .03, .003))
-        axs[1,0].set_title('Averaged by Run and by Step')
-
-        axs[0,1].hist(pd.Series(bus_trip[2]))#, bins=np.arange(0, .1, .001))
-        axs[0,1].set_title('Infections by run')
-
-        # print(bus_trip[3]["0"])
-        # axs[1,1] = fig.add_subplot(111)
-        axs[1,1].scatter(bus_trip[5]["distance"], bus_trip[5]["transmission rate"], s=2, color='green', label='far')
-        axs[1,1].scatter(bus_trip[4]["distance"], bus_trip[4]["transmission rate"], s=2, color='yellow', label='nearby')
-        axs[1,1].scatter(bus_trip[3]["distance"], bus_trip[3]["transmission rate"], s=2, color='red', label='neighbors')
-        axs[1,1].set_title('Distance from infected vs transmission rate')
-        axs[1,1].set_xlabel('Distance in Meters')
-        axs[1,1].set_ylabel('Transmission Rate')
-        plt.legend()
-        plt.savefig('results/transmission_rates.png', dpi=300)
-        plt.close()
-
-
-        temp_dict = self.generate_bus_seating()
-        x_arr = []
-        y_arr = []
-        for i in temp_dict.items():
-            x_arr.append(i[1][1])
-            y_arr.append(i[1][0] * 1.5 + 1)
-        fig2, ax = plt.subplots()
-        plt.matshow(avg_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
-        plt.scatter(x=x_arr, y=y_arr, s=500)
-        plt.arrow(-2,24,0,-26, head_width=1, head_length=1, fc='k', ec='k', lw=2)
-        plt.annotate(xy=(-1, -1), text='front', fontsize=50)
-        plt.annotate(xy=(-1, 24), text='back', fontsize=50)
-        plt.axis('off')
-        plt.savefig('results/conc_clean.png', dpi=300, bbox_inches='tight')
-
-        # print(len(bus_trip[0]))
-        # print(len(bus_trip[1]))
-        # print(len(bus_trip[2]["0"]))
-        # print(len(bus_trip[3]))
-
-
-
-
-
-        print('model_run complete!')
-
-        return
-    def compare_models(self):
-
+        # SCATTER
+            # Distance from initially infectious vs infection rate / 10000
+        #
 
         return

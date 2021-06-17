@@ -6,19 +6,6 @@ from av import *
 import json
 
 
-    #
-    # for item in data['maps']:
-    #     item['iscategorical'] = item['iscategorical'].replace('$home', item['id'])
-    #
-    # with open('new_data.json', 'w') as f:
-    #     json.dump(data, f)
-    # return
-# def replacer(data, new_val):
-#     for item in data:
-#         data[item] = data[item].replace("test", new_val)
-#
-#     return data
-
 def main(targets):
     '''
     Set json files
@@ -27,15 +14,12 @@ def main(targets):
         default_data = json.load(f)
     with open('results/aerosol_data_.json') as g:
         aerosol_data = json.load(g)
-    # print(targets)
-
-    # for i in sys.argv:
-    # print('t', targets, '0', args.0])
-    # number each of these:
     floor_area = float(args.bus_type) * 2.3 * 3.28084 # square feet
     trip_duration = args.trip_duration
     number_of_students = args.num_students
     mask = args.mask_wearing
+
+    adult_mask = args.adult
     windows = args.windows
     num_sims_ = 100 # default
     mask_eff_ = .1 # default
@@ -56,14 +40,8 @@ def main(targets):
     num_students_on_bus = '-n'
     mask_wearing_arg = '-m' # likelihood
     windows_arg = '-w'
-
-
-    # print(targets)
-
     # default values taken from:
     # https://indoor-covid-safety.herokuapp.com/apps/advanced
-    # defaults
-
     # update aerosol to results
     aerosol_data["floor_area"] = floor_area
     aerosol_data["mask_passage_prob"] = mask_eff_
@@ -89,26 +67,36 @@ def main(targets):
         json.dump(default_data, f)
     with open('results/aerosol_data_.json', 'w') as g:
         json.dump(aerosol_data, g)
-
-    print('finis')
-
+    print('Processing inputs, please wait...')
     return
+
 def main_2():
     '''
     Run functions using new json files
     '''
-
+    # Creating the class runs the sim (?)
     airavata_output = user_viz()
-    # run all functions
-
-    # airavata_output.plot_all() # includes 3 hist plots + kde + scatter
-    # make it run the sim on init!! then functions will plot from the same data
-    airavata_output.plot_bus_seating()
-
-    airavata_output.conc_heat()
 
     airavata_output.model_run()
-    print('av finish')
+    # includes 3 hist plots + kde + scatter
+
+    # hist 1 = mask options, other options as selected
+    # hist 2 = seating options, other options as selected
+    # hist 3 = window/vent options, other options as selected
+    # kde = best vs worst vs this case for infection / student
+    # scatter = risk of infection(whole model run)(Y) vs distance from infected (X)
+
+    # includes 3 sets of heat maps
+
+    # 1.1-1.3 show a step from 0-5
+    # heat 1.1 = 1 initial infected best case
+    # heat 1.2 = 1 initial infected worst case
+    # heat 1.3 = 1 initial infected this case
+
+    # 2.1-2.2 show average of all steps
+    # heat 2.1 = mean of each coordinate full run
+    # heat 2.2 = mean of each coordinate many runs
+    print('Simulation complete! Please check /results folder for output.')
     return
 
 if __name__ == '__main__':
@@ -120,6 +108,8 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--num_students', required=True)
     parser.add_argument('-m', '--mask_wearing', required=True)
     parser.add_argument('-w', '--windows', required=True)
+    parser.add_argument('-a', '--adult', required=True)
+
     args = parser.parse_args()
     # print(args)
 
