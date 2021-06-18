@@ -264,10 +264,10 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 tr
     g_shape, g_loc, g_scale = s_l_s_infectivity_density
 
     # print(dp, 'default')
-    # print(window_, 'window var')
-    bus_aerosol = return_aerosol_transmission_rate()#aerosol_params['floor_area'], aerosol_params['mean_ceiling_height'], aerosol_params['air_exchange_rate'], aerosol_params['aerosol_filtration_eff'], aerosol_params['relative_humidity'], aerosol_params['breathing_flow_rate'], aerosol_params['exhaled_air_inf'], aerosol_params['max_viral_deact_rate'], aerosol_params['mask_passage_prob'])
+    # print(window_, 'window var')#aerosol_params['floor_area'], aerosol_params['mean_ceiling_height'], aerosol_params['air_exchange_rate'], aerosol_params['aerosol_filtration_eff'], aerosol_params['relative_humidity'], aerosol_params['breathing_flow_rate'], aerosol_params['exhaled_air_inf'], aerosol_params['max_viral_deact_rate'], aerosol_params['mask_passage_prob'])
 
 
+    bus_aerosol = return_aerosol_transmission_rate(window_)
     concentration_array, avg_matrix = concentration_distribution(n_steps, n_sims, bus_flow_pos)
     # return average concentration over run
     out_matrix = np.array(np.zeros(shape=concentration_array[0].shape))
