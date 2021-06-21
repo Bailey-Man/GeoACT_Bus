@@ -168,44 +168,52 @@ class user_viz():
 
 
         # 3
-        # send plots to /output
-
+        flow_seats_ = self.seat_var
+        if flow_seats_ == "full":
+            seat_dict = load_parameters('config/f_seating_full.json')
+        else:
+            if flow_seats_ == "window":
+                seat_dict = load_parameters('config/f_seating_half_edge.json')
+            elif flow_seats_ == "zigzag":
+                seat_dict = load_parameters('config/f_seating_half_zig.json')
+            else:
+                print('ERROR')
         # concentration
-        # x_arr = []
-        # y_arr = []
-        # for i in bus_seating.items():
-        #     x_arr.append(i[1][1])
-        #     y_arr.append(i[1][0] * 1.5 + 1)
-        #
-        # # get average of conc_array; avg_mat???
-        #
-        # rot = mpl.transforms.Affine2D().rotate_deg(180)
-        # fig = plt.figure()
-        # ax1 = fig.add_subplot(1, 2, 1)
-        # ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
-        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        # plt.scatter(x=x_arr, y=y_arr, s=5)
-        # plt.gcf().set_size_inches(2,2)
-        # # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
-        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
-        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
-        # plt.axis('off')
-        #
-        #
-        # ax2 = fig.add_subplot(1,2,2)
-        # ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
-        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        # plt.scatter(x=x_arr, y=y_arr, s=5)
-        # plt.gcf().set_size_inches(2,2)
+        x_arr = []
+        y_arr = []
+        for i in flow_seats_.items(): ################### change seating
+            x_arr.append(i[1][1])
+            y_arr.append(i[1][0] * 1.5 + 1)
+
+        # get average of conc_array; avg_mat???
+
+        rot = mpl.transforms.Affine2D().rotate_deg(180)
+        fig = plt.figure()
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
+        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        plt.scatter(x=x_arr, y=y_arr, s=5)
+        plt.gcf().set_size_inches(2,2)
         # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
-        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
-        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
-        # # log scale vs regular scale + 'be not afraid'
-        # plt.axis('off')
-        # fig.text(.1, .01, 'Averaged relative concentration of viral particles\nLeft heatmap is Log Normalized for visibility', fontsize=4)
-        # plt.savefig('results/relative_airflow.png', dpi=300)
-        #
-        # print('relative airflow complete!')
+        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+        plt.axis('off')
+
+
+        ax2 = fig.add_subplot(1,2,2)
+        ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
+        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        plt.scatter(x=x_arr, y=y_arr, s=5)
+        plt.gcf().set_size_inches(2,2)
+        plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+        # log scale vs regular scale + 'be not afraid'
+        plt.axis('off')
+        fig.text(.1, .01, 'Concentration of viral particles in the\nLeft heatmap is Log Normalized for visibility', fontsize=4)
+        plt.savefig(output_filepath + 'concentration.png', dpi=300)
+
+        print('relative airflow complete!')
 
         # HISTOGRAMS
         # Hist 1 Seating
