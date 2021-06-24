@@ -215,22 +215,22 @@ class user_viz():
 
         print('relative airflow complete!')
 
-        # HISTOGRAMS
-        # Hist 1 Seating
-        # print('start seating')
-        # fig1, ax1 = plt.subplots()
-        # seat_types = ['full', 'window', 'zigzag']
-        # for s in seat_types:
-        #     bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, s, self.window_var) # SEATING
-        #     pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.12, 0.001), alpha=.5, ax=ax1)
-        #
-        # plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
-        # plt.xlabel('Mean likelihood of transmission at each step')
-        # plt.ylabel('Number of students with this average risk of transmission')
-        # seat_filepath = output_filepath + '_seating.png'
-        # fig1.savefig(seat_filepath, dpi=300)
-        # print('seating complete')
-        # plt.close(fig1)
+        HISTOGRAMS
+        Hist 1 Seating
+        print('start seating')
+        fig1, ax1 = plt.subplots()
+        seat_types = ['full', 'window', 'zigzag']
+        for s in seat_types:
+            bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, s, self.window_var) # SEATING
+            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.12, 0.001), alpha=.5, ax=ax1)
+
+        plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
+        plt.xlabel('Mean likelihood of transmission at each step')
+        plt.ylabel('Number of students with this average risk of transmission')
+        seat_filepath = output_filepath + '_seating.png'
+        fig1.savefig(seat_filepath, dpi=300)
+        print('seating complete')
+        plt.close(fig1)
 
         # Hist 2 Windows
         fig2, ax2 = plt.subplots()
