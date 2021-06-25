@@ -233,6 +233,9 @@ class user_viz():
         plt.close(fig1)
 
         # Hist 2 Windows
+
+
+        
         fig2, ax2 = plt.subplots()
         window_types = [0, 6]
         win_out_df = pd.DataFrame(columns=window_types)
