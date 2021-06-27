@@ -170,27 +170,28 @@ class user_viz():
         # 3
         flow_seats_ = self.seat_var
         if flow_seats_ == "full":
-            seat_dict = load_parameters('config/f_seating_full.json')
+            seat_dict = self.load_parameters('config/f_seating_full.json')
         else:
             if flow_seats_ == "window":
-                seat_dict = load_parameters('config/f_seating_half_edge.json')
+                seat_dict = self.load_parameters('config/f_seating_half_edge.json')
             elif flow_seats_ == "zigzag":
-                seat_dict = load_parameters('config/f_seating_half_zig.json')
+                seat_dict = self.load_parameters('config/f_seating_half_zig.json')
             else:
                 print('ERROR')
         # concentration
         x_arr = []
         y_arr = []
-        for i in flow_seats_.items(): ################### change seating
+        for i in seat_dict.items(): ################### change seating
             x_arr.append(i[1][1])
             y_arr.append(i[1][0] * 1.5 + 1)
 
         # get average of conc_array; avg_mat???
 
         rot = mpl.transforms.Affine2D().rotate_deg(180)
-        fig = plt.figure()
-        ax1 = fig.add_subplot(1, 2, 1)
-        ax1.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
+        # fig = plt.figure()
+        # ax1 = fig.add_subplot(1, 2, 1)
+        fig, ax1 = plt.subplots()
+        plt.matshow(out_mat, cmap="OrRd", norm=mpl.colors.LogNorm())
         plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
         plt.scatter(x=x_arr, y=y_arr, s=5)
         plt.gcf().set_size_inches(2,2)
@@ -200,72 +201,75 @@ class user_viz():
         plt.axis('off')
 
 
-        ax2 = fig.add_subplot(1,2,2)
-        ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
-        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        plt.scatter(x=x_arr, y=y_arr, s=5)
-        plt.gcf().set_size_inches(2,2)
-        plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
-        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
-        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
-        # log scale vs regular scale + 'be not afraid'
-        plt.axis('off')
-        fig.text(.1, .01, 'Concentration of viral particles in the\nLeft heatmap is Log Normalized for visibility', fontsize=4)
+        # ax2 = fig.add_subplot(1,2,2)
+        # ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
+        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        # plt.scatter(x=x_arr, y=y_arr, s=5)
+        # plt.gcf().set_size_inches(2,2)
+        # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+        # # log scale vs regular scale + 'be not afraid'
+        # plt.axis('off')
+        # fig.text(.1, .01, 'Concentration of viral particles in the\nLeft heatmap is Log Normalized for visibility', fontsize=4)
         plt.savefig(output_filepath + 'concentration.png', dpi=300)
 
         print('relative airflow complete!')
 
-        HISTOGRAMS
-        Hist 1 Seating
-        print('start seating')
-        fig1, ax1 = plt.subplots()
-        seat_types = ['full', 'window', 'zigzag']
-        for s in seat_types:
-            bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, s, self.window_var) # SEATING
-            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.12, 0.001), alpha=.5, ax=ax1)
+        # HISTOGRAMS
+        # Hist 1 Seating
+        # print('start seating')
+        # fig1, ax1 = plt.subplots()
+        # seat_types = ['full', 'window', 'zigzag']
+        # for s in seat_types:
+        #     bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, s, self.window_var) # SEATING
+        #     pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.12, 0.001), alpha=.5, ax=ax1)
+        #
+        # plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
+        # plt.xlabel('Mean likelihood of transmission at each step')
+        # plt.ylabel('Number of students with this average risk of transmission')
+        # seat_filepath = output_filepath + '_seating.png'
+        # fig1.savefig(seat_filepath, dpi=300)
+        # print('seating complete')
+        # plt.close(fig1)
+        #
+        # # Hist 2 Windows
+        #
+        #
+        #
+        # fig2, ax2 = plt.subplots()
+        # window_types = [0, 6]
+        # win_out_df = pd.DataFrame(columns=window_types)
+        # for w in window_types:
+        #     bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
+        #     pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5, ax=ax2)
+        #
+        # plt.legend([0, 6])
+        # plt.xlabel('Mean likelihood of transmission at each step')
+        # plt.ylabel('Number of students with this average risk of transmission')
+        # seat_filepath_2 = output_filepath + '_windows.png'
+        # fig2.savefig(seat_filepath_2, dpi=300)
+        # plt.close(fig2)
+        # print('windows complete')
+        #
+        # # Hist 3 Masks
+        # fig3 = plt.figure(3)
+        # mask_amount = [1, .9, .8, .7]
+        # print('start masks')
+        # for m in mask_amount:
+        #     bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), m, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # SEATING
+        #     pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
+        #
+        # plt.legend(['100% Mask compliance', '90% Mask compliance', '80% Mask compliance', '70% Mask compliance'])
+        # plt.xlabel('Mean likelihood of transmission at each step')
+        # plt.ylabel('Number of students with this average risk of transmission')
+        # seat_filepath_3 = output_filepath + '_masks.png'
+        # fig3.savefig(seat_filepath_3, dpi=300)
+        # plt.close(fig3)
+        # print('masks complete')
 
-        plt.legend(['Full Occupancy Seating', 'Window Seats Only', 'Zigzag Seating'])
-        plt.xlabel('Mean likelihood of transmission at each step')
-        plt.ylabel('Number of students with this average risk of transmission')
-        seat_filepath = output_filepath + '_seating.png'
-        fig1.savefig(seat_filepath, dpi=300)
-        print('seating complete')
-        plt.close(fig1)
 
-        # Hist 2 Windows
-
-
-        
-        fig2, ax2 = plt.subplots()
-        window_types = [0, 6]
-        win_out_df = pd.DataFrame(columns=window_types)
-        for w in window_types:
-            bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
-            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5, ax=ax2)
-
-        plt.legend([0, 6])
-        plt.xlabel('Mean likelihood of transmission at each step')
-        plt.ylabel('Number of students with this average risk of transmission')
-        seat_filepath_2 = output_filepath + '_windows.png'
-        fig2.savefig(seat_filepath_2, dpi=300)
-        plt.close(fig2)
-        print('windows complete')
-
-        # Hist 3 Masks
-        fig3 = plt.figure(3)
-        mask_amount = [1, .9, .8, .7]
-        print('start masks')
-        for m in mask_amount:
-            bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), m, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # SEATING
-            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
-
-        plt.legend(['100% Mask compliance', '90% Mask compliance', '80% Mask compliance', '70% Mask compliance'])
-        plt.xlabel('Mean likelihood of transmission at each step')
-        plt.ylabel('Number of students with this average risk of transmission')
-        seat_filepath_3 = output_filepath + '_masks.png'
-        fig3.savefig(seat_filepath_3, dpi=300)
-        plt.close(fig3)
-        print('masks complete')
+        ###########################################3
 
         # # KDEPLOT and SCATTERPLOT
         # # KDE
