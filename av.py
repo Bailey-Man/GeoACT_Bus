@@ -216,6 +216,8 @@ class user_viz():
 
         print('relative airflow complete!')
 
+        ##### TODO: make the x axis adaptive
+
         # HISTOGRAMS
         # Hist 1 Seating
         # print('start seating')
@@ -271,43 +273,44 @@ class user_viz():
 
         ###########################################3
 
-        # # KDEPLOT and SCATTERPLOT
-        # # KDE
+        # KDEPLOT and SCATTERPLOT
+        # KDE
         # pd.Series(bus_out_array).plot.kde(lw=2, c='r') # THIS KDEPLOT IS TO LOOK COOL AND DO NOTHING
         # rework bus_out_array into array of outputs:
         # All Transmission rates
         # Averaged Student/Run rates
         # Averaged /Step Student/Run rates
         # All Averaged /Step rates
-        # print(len(bus_out_array))
-        #     fig, axes = plt.figure()
-        #     print('please')
-        #
-        #
-        # fig, axs = plt.subplots(2,2)
-        # fig.tight_layout()
-        # # axs[0,0] = pd.Series(bus_out_array[0]).plot.kde(lw=2, color='blue')
-        # # axs[1,0] = pd.Series(bus_out_array[1]).plot.kde(lw=2, color='r')
-        # axs[0,0].hist(bus_out_array[0], bins=np.arange(0, .03, .001))
-        # axs[0,0].set_title('All 5-minute transmission likelihoods')
-        #
-        # pd.Series(bus_out_array[1]).plot.kde(ax=axs[1,0])#), bins=14)#, bins=np.arange(0, .03, .003))
-        # axs[1,0].set_title('Averaged by Run and by Step')
-        #
-        # axs[0,1].hist(pd.Series(bus_out_array[2]))#, bins=np.arange(0, .1, .001))
-        # axs[0,1].set_title('Infections by run')
-        #
-        # # print(bus_out_array[3]["0"])
-        # # axs[1,1] = fig.add_subplot(111)
-        # axs[1,1].scatter(bus_out_array[5]["distance"], bus_out_array[5]["transmission rate"], s=2, color='green', label='far')
-        # axs[1,1].scatter(bus_out_array[2]["distance"], bus_out_array[2]["transmission rate"], s=2, color='yellow', label='nearby')
-        # axs[1,1].scatter(bus_out_array[3]["distance"], bus_out_array[3]["transmission rate"], s=2, color='red', label='neighbors')
-        # axs[1,1].set_title('Distance from infected vs transmission rate')
-        # axs[1,1].set_xlabel('Distance in Meters')
-        # axs[1,1].set_ylabel('Transmission Rate')
-        # plt.legend()
-        # plt.savefig('results/transmission_rates.png', dpi=300)
-        # plt.close(fig)
+        print(len(bus_out_array))
+        # fig, axes = plt.figure()
+        # print('please')
+
+
+        fig, axs = plt.subplots(2,2)
+        fig.tight_layout()
+        # axs[0,0] = pd.Series(bus_out_array[0]).plot.kde(lw=2, color='blue')
+        # axs[1,0] = pd.Series(bus_out_array[1]).plot.kde(lw=2, color='r')
+        axs[0,0].hist(bus_out_array[0], bins=np.arange(0, .03, .001))
+        axs[0,0].set_title('All 5-minute transmission likelihoods')
+
+        pd.Series(bus_out_array[1]).plot.kde(ax=axs[1,0])#), bins=14)#, bins=np.arange(0, .03, .003))
+        axs[1,0].set_title('Averaged by Run and by Step')
+
+        axs[0,1].hist(pd.Series(bus_out_array[2]))#, bins=np.arange(0, .1, .001))
+        axs[0,1].set_title('Infections by run')
+
+        # print(bus_out_array[3]["0"])
+        # axs[1,1] = fig.add_subplot(111)
+        axs[1,1].scatter(bus_out_array[5]["distance"], bus_out_array[5]["transmission rate"], s=2, color='green', label='far')
+        axs[1,1].scatter(bus_out_array[2]["distance"], bus_out_array[2]["transmission rate"], s=2, color='yellow', label='nearby')
+        axs[1,1].scatter(bus_out_array[3]["distance"], bus_out_array[3]["transmission rate"], s=2, color='red', label='neighbors')
+        axs[1,1].set_title('Distance from infected vs transmission rate')
+        axs[1,1].set_xlabel('Distance in Meters')
+        axs[1,1].set_ylabel('Transmission Rate')
+        plt.legend()
+        plt.savefig(output_filepath + '_transmission_rates.png', dpi=300)
+        plt.close(fig)
+        print('transmission rate complete!')
 
 
         # KDE2? One for each student with overlapped sections darker
