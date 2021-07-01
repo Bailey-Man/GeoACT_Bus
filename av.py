@@ -201,22 +201,33 @@ class user_viz():
         plt.axis('off')
 
 
-        # ax2 = fig.add_subplot(1,2,2)
-        # ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
-        # plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
-        # plt.scatter(x=x_arr, y=y_arr, s=5)
-        # plt.gcf().set_size_inches(2,2)
-        # plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
-        # plt.annotate(xy=(-1, -1), text='front', fontsize=5)
-        # plt.annotate(xy=(-1, 24), text='back', fontsize=5)
-        # # log scale vs regular scale + 'be not afraid'
-        # plt.axis('off')
-        # fig.text(.1, .01, 'Concentration of viral particles in the\nLeft heatmap is Log Normalized for visibility', fontsize=4)
+        ax2 = fig.add_subplot(1,2,2)
+        ax2.matshow(out_mat, cmap="OrRd")#, norm=mpl.colors.LogNorm())
+        plt.arrow(-2,24,0,-26, head_width=0.2, head_length=0.2, fc='k', ec='k')
+        plt.scatter(x=x_arr, y=y_arr, s=5)
+        plt.gcf().set_size_inches(2,2)
+        plt.suptitle('Relative Airflow Heatmap', fontsize=7.5)
+        plt.annotate(xy=(-1, -1), text='front', fontsize=5)
+        plt.annotate(xy=(-1, 24), text='back', fontsize=5)
+        # log scale vs regular scale + 'be not afraid'
+        plt.axis('off')
+        fig.text(.1, .01, 'Concentration of viral particles in the\nLeft heatmap is Log Normalized for visibility', fontsize=4)
         plt.savefig(output_filepath + 'concentration.png', dpi=300)
 
         print('relative airflow complete!')
 
         ##### TODO: make the x axis adaptive
+
+
+        # 4: 5-min Transmit chance
+
+        # 5: Average Infect % by Run and Step
+
+        # 6: Average Infect % by Run
+
+        # 7: Scatter
+
+        # 8: Transmission Rates
 
         # HISTOGRAMS
         # Hist 1 Seating
