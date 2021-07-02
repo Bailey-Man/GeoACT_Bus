@@ -138,36 +138,29 @@ class user_viz():
     # function to run model with user input
     def model_run(self):
         '''
-        1 call bus_out_array
-        2 start plotting hist
-        3 window curve
-        4 5-min transmission likelihood
-        5 Averaged by Run and by Step
-        6 Infections by run
-        7 Scatter of distance vs infection
-        8 Transmission Rates
+        1 SETUP
+        2 LOADING
+        3 CONCENTRATION + 2
+        4 HISTOGRAMS + 3
+        5 SCATTER/KDE + 2
+        6 T_RISK AVERAGE + 1
+
+        total = 8
 
         '''
 
-        # 1bus_seating = self.generate_bus_seating()
+        # 1 SETUP
         bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # replace default with selected
 
         self.chance_nonzero = chance_nonzero
         self.conc_array = conc_array
 
-        # 2
+        # 2 LOADING
         plt.figure(figsize=(5,4))#, dpi=300)
         plt.gcf().set_size_inches(5,4)
-
         output_filepath = "output/bus_simulation_" + str(self.students_var) + '_' + str(self.mask_var)+ '_' + str(self.number_simulations) + '_' + str(self.trip_length) + '_' + str(self.seat_var) + '_' + str(self.window_var) # str(i) for i in [self.inputs]
-
-        # bus_out_array = this case
         w_bus_out_array, w_conc_array, w_out_mat, w_chance_nonzero, w_avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # WORST CASE
-
         b_bus_out_array, b_conc_array, b_out_mat, b_chance_nonzero, b_avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # BEST CASE
-
-
-        # 3
         flow_seats_ = self.seat_var
         if flow_seats_ == "full":
             seat_dict = self.load_parameters('config/f_seating_full.json')
@@ -178,7 +171,9 @@ class user_viz():
                 seat_dict = self.load_parameters('config/f_seating_half_zig.json')
             else:
                 print('ERROR')
-        # concentration
+
+        # 3 CONCENTRATION
+
         x_arr = []
         y_arr = []
         for i in seat_dict.items(): ################### change seating
@@ -216,18 +211,7 @@ class user_viz():
 
         print('relative airflow complete!')
 
-        ##### TODO: make the x axis adaptive
-
-
-        # 4: 5-min Transmit chance
-
-        # 5: Average Infect % by Run and Step
-
-        # 6: Average Infect % by Run
-
-        # 7: Scatter
-
-        # 8: Transmission Rates
+        # 4 HISTOGRAMS
 
         # HISTOGRAMS
         # Hist 1 Seating
@@ -247,8 +231,6 @@ class user_viz():
         # plt.close(fig1)
         #
         # # Hist 2 Windows
-        #
-        #
         #
         # fig2, ax2 = plt.subplots()
         # window_types = [0, 6]
@@ -282,20 +264,8 @@ class user_viz():
         # print('masks complete')
 
 
-        ###########################################3
-
-        # KDEPLOT and SCATTERPLOT
-        # KDE
+        # 5 SCATTER and KDE
         # pd.Series(bus_out_array).plot.kde(lw=2, c='r') # THIS KDEPLOT IS TO LOOK COOL AND DO NOTHING
-        # rework bus_out_array into array of outputs:
-        # All Transmission rates
-        # Averaged Student/Run rates
-        # Averaged /Step Student/Run rates
-        # All Averaged /Step rates
-        print(len(bus_out_array))
-        # fig, axes = plt.figure()
-        # print('please')
-
 
         fig, axs = plt.subplots(2,2)
         fig.tight_layout()
