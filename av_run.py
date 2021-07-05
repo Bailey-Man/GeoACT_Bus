@@ -96,7 +96,7 @@ def main_2():
     # 2.1-2.2 show average of all steps
     # heat 2.1 = mean of each coordinate full run
     # heat 2.2 = mean of each coordinate many runs
-    print('Simulation complete! Please check /results folder for output.')
+    print('Simulation complete! Please check /output folder for output.')
     return
 
 if __name__ == '__main__':

@@ -237,20 +237,34 @@ class user_viz():
         fig2, ax2 = plt.subplots()
         window_types = [0, 6]
         win_out_df = pd.DataFrame(columns=window_types)
+        temp = 0.051
+        temp_step = 0.001
 
         # add dynamic x range ToDo
 
         for w in window_types:
             bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
-            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.102, 0.002), alpha=.5, ax=ax2)
+            x_range = [.051, .102, .153, .204]
+            for i in range(len(x_range)):
+                if x_range[i] < max(bus_out_array[2].values()):
+                    pass
+                else:
+                    temp = x_range[i]
+                    temp_step = 0.001 * (i + 1)
 
-        plt.legend([0, 6])
+
+            # TODO: Check all values of KDE are positive
+
+            pd.Series(bus_out_array[2]).plot.kde(alpha=.5, ax=ax2)
+            pd.Series(bus_out_array[2]).plot.hist(alpha=.5, ax=ax2)
+
+        fig2.legend(['Windows Closed', 'Windows Open 6 Inches'])
         plt.xlabel('Mean likelihood of transmission at each step')
         plt.ylabel('Number of students with this average risk of transmission')
         seat_filepath_2 = output_filepath + '_windows.png'
         fig2.savefig(seat_filepath_2, dpi=300)
         plt.close(fig2)
-        print('windows complete')
+        print('Windows complete!')
 
         # Hist 3 Masks
 
@@ -268,13 +282,13 @@ class user_viz():
         seat_filepath_3 = output_filepath + '_masks.png'
         fig3.savefig(seat_filepath_3, dpi=300)
         plt.close(fig3)
-        print('masks complete')
+        print('Masks complete!')
 
 
         # 5 SCATTER and KDE
         print('Scatter...')
-        fig, axs = plt.subplots(2,2)
-        fig.tight_layout()
+        figscat, axs = plt.subplots(2,2)
+        figscat.tight_layout()
         # axs[0,0] = pd.Series(bus_out_array[0]).plot.kde(lw=2, color='blue')
         # axs[1,0] = pd.Series(bus_out_array[1]).plot.kde(lw=2, color='r')
         axs[0,0].hist(bus_out_array[0], bins=np.arange(0, .03, .001))
@@ -288,23 +302,23 @@ class user_viz():
 
         # print(bus_out_array[3]["0"])
         # axs[1,1] = fig.add_subplot(111)
-        axs[1,1].scatter(bus_out_array[5]["distance"], bus_out_array[5]["transmission rate"], s=2, color='green', label='far')
-        axs[1,1].scatter(bus_out_array[2]["distance"], bus_out_array[2]["transmission rate"], s=2, color='yellow', label='nearby')
-        axs[1,1].scatter(bus_out_array[3]["distance"], bus_out_array[3]["transmission rate"], s=2, color='red', label='neighbors')
-        axs[1,1].set_title('Distance from infected vs transmission rate')
-        axs[1,1].set_xlabel('Distance in Meters')
-        axs[1,1].set_ylabel('Transmission Rate')
-        plt.legend()
-        plt.savefig(output_filepath + '_transmission_rates.png', dpi=300)
-        plt.close(fig)
-        print('transmission rate complete!')
+        # axs[1,1].scatter(bus_out_array[5]["distance"], bus_out_array[5]["transmission rate"], s=2, color='green', label='far')
+        # axs[1,1].scatter(bus_out_array[2]["distance"], bus_out_array[2]["transmission rate"], s=2, color='yellow', label='nearby')
+        # axs[1,1].scatter(bus_out_array[3]["distance"], bus_out_array[3]["transmission rate"], s=2, color='red', label='neighbors')
+        # axs[1,1].set_title('Distance from infected vs transmission rate')
+        # axs[1,1].set_xlabel('Distance in Meters')
+        # axs[1,1].set_ylabel('Transmission Rate')
+        # plt.legend()
+        figscat.savefig(output_filepath + '_transmission_rates.png', dpi=300)
+        plt.close(figscat)
+        print('Transmission rate complete!')
 
-        print('KDE...')
-        figKDE = plt.subplots()
-        kde = pd.Series(bus_out_array).plot.kde(lw=2, c='r')
-        fp = output_filepath + '_KDE.png'
-        figKDE.savefig(fp, dpi=300)
-        plt.close(figKDE)
+        # print('KDE...')
+        # figKDE = plt.subplots()
+        # kde = pd.Series(bus_out_array).plot.kde(lw=2, c='r')
+        # fp = output_filepath + '_KDE.png'
+        # figKDE.savefig(fp, dpi=300)
+        # plt.close(figKDE)
         # THIS KDEPLOT IS TO LOOK COOL AND DO NOTHING
 
         # 6 T_RISK

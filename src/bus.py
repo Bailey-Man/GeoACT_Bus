@@ -357,7 +357,7 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 tr
                     temp_average_array[student_id].append(transmission)
                     all_transmissions.append(transmission)
                     # print('oh')
-                    print(distance, 'd')
+                    # print(distance, 'd')
                     if distance < .5:
                         close_scatter_dist["distance"].append(distance)
                         close_scatter_dist["transmission rate"].append(transmission)
@@ -382,7 +382,7 @@ def bus_sim(n_students, mask, n_sims, trip_len, flow_seats_, window_): # do 1 tr
         averaged_all_runstep[id] = avg
         infection_over_run[id] = (1 - (1-avg)**n_steps)
 
-        print(close_scatter_dist)
+    # print(close_scatter_dist)
     # average risk of >= 1 infection across all model runs
     if len(run_average_array) == 0:
         print('Sim failed')
