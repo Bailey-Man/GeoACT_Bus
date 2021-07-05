@@ -4,6 +4,7 @@ import sys
 import os
 import pandas as pd
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
@@ -245,6 +246,10 @@ class user_viz():
         for w in window_types:
             bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
             x_range = [.051, .102, .153, .204]
+
+
+
+
             for i in range(len(x_range)):
                 if x_range[i] < max(bus_out_array[2].values()):
                     pass
@@ -255,8 +260,14 @@ class user_viz():
 
             # TODO: Check all values of KDE are positive
 
-            pd.Series(bus_out_array[2]).plot.kde(alpha=.5, ax=ax2)
-            pd.Series(bus_out_array[2]).plot.hist(alpha=.5, ax=ax2)
+            # pd.Series(bus_out_array[2]).plot.kde(alpha=.5, ax=ax2)
+            # pd.Series(bus_out_array[2]).plot.hist(alpha=.5, ax=ax2)
+
+            ###############################################
+
+            # SEABORN
+            sns.distplot(list(bus_out_array[2].values()), ax=ax2, rug=True, kde=False, hist_kws={"histtype": "step", "linewidth": 3, "alpha": 1})
+
 
         fig2.legend(['Windows Closed', 'Windows Open 6 Inches'])
         plt.xlabel('Mean likelihood of transmission at each step')
@@ -272,10 +283,13 @@ class user_viz():
         fig3 = plt.figure(3)
         mask_amount = [1, .9, .8, .7]
         print('start masks')
+        colorlist = ['blue', 'green', 'yellow', 'red']
+        count_ = 0
+
         for m in mask_amount:
             bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), m, self.number_simulations, self.trip_length, self.seat_var, self.window_var) # SEATING
-            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5)
-
+            pd.Series(bus_out_array[2]).plot.hist(bins=np.arange(0, 0.056, 0.001), alpha=.5, color=colorlist[count_])
+            count_ += 1
         plt.legend(['100% Mask compliance', '90% Mask compliance', '80% Mask compliance', '70% Mask compliance'])
         plt.xlabel('Mean likelihood of transmission at each step')
         plt.ylabel('Number of students with this average risk of transmission')
@@ -300,7 +314,8 @@ class user_viz():
         axs[0,1].hist(pd.Series(bus_out_array[2]))#, bins=np.arange(0, .1, .001))
         axs[0,1].set_title('Infections by run')
 
-        # print(bus_out_array[3]["0"])
+
+        print(bus_out_array[2])
         # axs[1,1] = fig.add_subplot(111)
         # axs[1,1].scatter(bus_out_array[5]["distance"], bus_out_array[5]["transmission rate"], s=2, color='green', label='far')
         # axs[1,1].scatter(bus_out_array[2]["distance"], bus_out_array[2]["transmission rate"], s=2, color='yellow', label='nearby')
