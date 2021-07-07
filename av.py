@@ -247,7 +247,7 @@ class user_viz():
             bus_out_array, conc_array, out_mat, chance_nonzero, avg_mat = bus_sim(int(self.students_var), self.mask_var, self.number_simulations, self.trip_length, self.seat_var, w) # WINDOW
             x_range = [.051, .102, .153, .204]
 
-
+            ## 7/4 TODO: why is it all going wrong
 
 
             for i in range(len(x_range)):
