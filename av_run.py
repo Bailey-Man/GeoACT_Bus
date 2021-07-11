@@ -25,6 +25,7 @@ def main(targets):
     mask_eff_ = .1 # default
     seating_ = args.seating_type
     air_exchange_rate = aerosol_data['air_exchange_rate']
+
     # print(windows, 'win')
     if windows == 0 or windows == '0':
         air_exchange_rate = 2 # TESTING for windows closed
@@ -40,6 +41,7 @@ def main(targets):
     num_students_on_bus = '-n'
     mask_wearing_arg = '-m' # likelihood
     windows_arg = '-w'
+    adults_arg = '-a'
     # default values taken from:
     # https://indoor-covid-safety.herokuapp.com/apps/advanced
     # update aerosol to results
