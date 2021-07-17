@@ -93,12 +93,9 @@ class user_viz():
                 print('error temp bad')
         # evaluate temp based on # students
         num_kids = self.students_var
-        # print(num_kids, 'num_kids')
         temp_dict = {}
         for i in range(int(num_kids)):
             temp_dict[str(i)] = seat_dict[str(i)]
-        # print(temp)
-        # print(temp_dict, 'temp')
         return temp_dict
 
     def plot_bus_seating(self, seating):
